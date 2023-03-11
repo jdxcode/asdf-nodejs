@@ -24,7 +24,12 @@ all_definitions_from_node_build="$(nodebuild_wrapped --definitions)"
 # Print
 numeric="$(print_only_fully_numeric_items "$all_definitions_from_node_build")"
 
+echo "lts          $(echo "$numeric" | grep -E '^18' | tail -n1)"
 echo "lts/hydrogen $(echo "$numeric" | grep -E '^18' | tail -n1)"
 echo "lts/gallium  $(echo "$numeric" | grep -E '^16' | tail -n1)"
 echo "lts/fermium  $(echo "$numeric" | grep -E '^14' | tail -n1)"
-echo "lts/erbium   $(echo "$numeric" | grep -E '^14' | tail -n1)"
+echo "lts/erbium   $(echo "$numeric" | grep -E '^12' | tail -n1)"
+echo "lts/dubnium  $(echo "$numeric" | grep -E '^10' | tail -n1)"
+echo "lts/carbon   $(echo "$numeric" | grep -E  '^8' | tail -n1)"
+echo "lts/boron    $(echo "$numeric" | grep -E  '^6' | tail -n1)"
+echo "lts/argon    $(echo "$numeric" | grep -E  '^4' | tail -n1)"
