@@ -22,14 +22,14 @@ install_nodejs() {
 try_to_update_nodebuild() {
   local exit_code=0
 
-  "$ASDF_NODEJS_PLUGIN_DIR/lib/commands/command-update-nodebuild.bash" 2> /dev/null || exit_code=$?
+  "$RTX_NODEJS_PLUGIN_DIR/lib/commands/command-update-nodebuild.bash" 2> /dev/null || exit_code=$?
 
   if [ "$exit_code" != 0 ]; then
     printf "
 $(colored $YELLOW WARNING): Updating node-build failed with exit code %s. The installation will
 try to continue with already installed local defintions. To debug what went
-wrong, try to manually update node-build by running: \`asdf %s update nodebuild\`
-\n" "$exit_code" "$ASDF_NODEJS_PLUGIN_NAME"
+wrong, try to manually update node-build by running: \`rtx %s update nodebuild\`
+\n" "$exit_code" "$RTX_NODEJS_PLUGIN_NAME"
   fi
 }
 
@@ -38,13 +38,13 @@ install_canon_version() {
   local install_type="$1" version="$2" install_path="$3"
   local args=()
 
-  if [ "$install_type" = ref ] || [ "${ASDF_NODEJS_FORCE_COMPILE-}" ]; then
+  if [ "$install_type" = ref ] || [ "${RTX_NODEJS_FORCE_COMPILE-}" ]; then
     args+=(-c)
   fi
 
   try_to_update_nodebuild
 
-  NODE_BUILD_CACHE_PATH="${NODE_BUILD_CACHE_PATH:-$ASDF_DOWNLOAD_PATH}" \
+  NODE_BUILD_CACHE_PATH="${NODE_BUILD_CACHE_PATH:-$RTX_DOWNLOAD_PATH}" \
     nodebuild_wrapped ${args+"${args[@]}"} "$version" "$install_path"
 }
 
@@ -56,7 +56,7 @@ install_aliased_version() {
 
   # install the true version and only symlink it to the alias
   >&2 echo "Installing alias $version_query as $version"
-  asdf install "$(plugin_name)" "$version" \
+  rtx install "$RTX_PLUGIN_NAME" "$version" \
     || die "Could not install version $version"
 
   if [ -L "$install_path" ]; then
@@ -66,7 +66,7 @@ install_aliased_version() {
   fi
 
   >&2 echo "Linking \"$version_query\" to \"$version\""
-  ln -s "$(asdf where "$(plugin_name)" "$version")" "$install_path"
+  ln -s "$(rtx where "$RTX_PLUGIN_NAME" "$version")" "$install_path"
 }
 
 
@@ -88,7 +88,7 @@ resolve_version_query() {
 
 
 install_default_npm_packages() {
-  local default_npm_packages_file="${ASDF_NPM_DEFAULT_PACKAGES_FILE:=$HOME/.default-npm-packages}" filtered_packages=
+  local default_npm_packages_file="${RTX_NPM_DEFAULT_PACKAGES_FILE:=$HOME/.default-npm-packages}" filtered_packages=
 
   if ! [ -f "$default_npm_packages_file" ]; then
     return 0
@@ -102,18 +102,18 @@ install_default_npm_packages() {
     printf "\x8\x8 \n" # Cleanup last comma
 
     (
-      if [ -r "$ASDF_NODEJS_PLUGIN_DIR/bin/exec-env" ]; then
-        . "$ASDF_NODEJS_PLUGIN_DIR/bin/exec-env"
+      if [ -r "$RTX_NODEJS_PLUGIN_DIR/bin/exec-env" ]; then
+        . "$RTX_NODEJS_PLUGIN_DIR/bin/exec-env"
       fi
 
-      xargs env PATH="$ASDF_INSTALL_PATH/bin:$PATH" npm install -g <<< "$filtered_packages"
+      xargs env PATH="$RTX_INSTALL_PATH/bin:$PATH" npm install -g <<< "$filtered_packages"
     )
   fi
 }
 
-install_nodejs "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
+install_nodejs "$RTX_INSTALL_TYPE" "$RTX_INSTALL_VERSION" "$RTX_INSTALL_PATH"
 
 install_default_npm_packages \
   || printf "\n$(colored $YELLOW WARNING:) An error occurred when installing the default npm packages, but Node's installation succeeded\n"
 
-asdf reshim "$(plugin_name)" "$ASDF_INSTALL_VERSION"
+asdf reshim "$RTX_PLUGIN_NAME" "$RTX_INSTALL_VERSION"

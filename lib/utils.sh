@@ -8,20 +8,9 @@ then
   NODEJS_ORG_MIRROR=$NODEJS_ORG_MIRROR/
 fi
 
-export ASDF_NODEJS_PLUGIN_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
+export RTX_NODEJS_PLUGIN_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 
-# TODO: Replace with an asdf variable once asdf starts providing the plugin name
-# as a variable
-export ASDF_NODEJS_PLUGIN_NAME=$(basename "$ASDF_NODEJS_PLUGIN_DIR")
-plugin_name() {
-  printf "%s\n" "$ASDF_NODEJS_PLUGIN_NAME"
-}
-
-asdf_data_dir() {
-  printf "%s\n" "${ASDF_DATA_DIR:-$HOME/.asdf}"
-}
-
-export ASDF_NODEJS_CACHE_DIR="$(asdf_data_dir)/tmp/$ASDF_NODEJS_PLUGIN_NAME/cache"
+export RTX_NODEJS_CACHE_DIR="$RTX_DATA_DIR/tmp/$RTX_PLUGIN_NAME/cache"
 
 # Colors
 colored() {
@@ -83,7 +72,7 @@ filter_version_candidates() {
   done
 }
 
-versions_cache_dir="$ASDF_NODEJS_CACHE_DIR/versions-tab"
+versions_cache_dir="$RTX_NODEJS_CACHE_DIR/versions-tab"
 mkdir -p "$versions_cache_dir"
 
 etag_file="$versions_cache_dir/etag"
@@ -112,5 +101,5 @@ print_index_tab(){
 }
 
 nodebuild_wrapped() {
-  "$ASDF_NODEJS_PLUGIN_DIR/lib/commands/command-nodebuild.bash" "$@"
+  "$RTX_NODEJS_PLUGIN_DIR/lib/commands/command-nodebuild.bash" "$@"
 }
