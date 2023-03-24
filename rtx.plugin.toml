@@ -1,0 +1,19 @@
+#:schema https://rtx.pub/schema/rtx.plugin.json
+
+[list-legacy-filenames]
+data = """
+.nvmrc .node-version
+"""
+
+[list-aliases]
+data = """
+lts          18
+lts/hydrogen 18
+lts/gallium  16
+lts/fermium  14
+lts/erbium   12
+lts/dubnium  10
+lts/carbon    8
+lts/boron     6
+lts/argon     4
+"""
