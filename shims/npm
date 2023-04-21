@@ -11,7 +11,7 @@ plugin_name=$(basename "$(dirname "$this_dir")")
 
 this_dir=$(cd "$this_dir" && pwd -P) # Normalizes the directory
 
-plugin_dir="${RTX_DATA_DIR}/plugins/$plugin_name"
+plugin_dir="${this_dir}/.."
 
 should_reshim() {
   if [ "${RTX_SKIP_RESHIM:-}" ]; then
